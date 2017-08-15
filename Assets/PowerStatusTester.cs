@@ -11,13 +11,24 @@ public class PowerStatusTester : MonoBehaviour
 	{
 		var isPowerSaverOn = PowerStatus.IsPowerSaverOn;
 		PowerSaverToggle.isOn = isPowerSaverOn;
+		Application.targetFrameRate = isPowerSaverOn ? 30 : 60;
+	}
 
-		if (isPowerSaverOn) {
-			Application.targetFrameRate = 30;
-		} else {
-			Application.targetFrameRate = 60;
-		}
+	protected virtual void Awake()
+	{
+		PowerStatus.PowerSaverChanged += PowerStatus_PowerSaverChanged;
+	}
+
+	protected virtual void OnDestroy()
+	{
+		PowerStatus.PowerSaverChanged -= PowerStatus_PowerSaverChanged;
 	}
 
 	#endregion
+
+	void PowerStatus_PowerSaverChanged(bool obj)
+	{
+		PowerSaverToggle.isOn = obj;
+		Application.targetFrameRate = obj ? 30 : 60;
+	}
 }
