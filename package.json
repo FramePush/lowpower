@@ -1,0 +1,12 @@
+{
+    "name": "com.framepush.lowpower",
+    "displayName": "Low Power",
+    "version": "0.3.0",
+    "unity": "2018.1",
+    "description": "Detects and notifies of changes to low power mode.",
+    "keywords": [
+        "power",
+        "battery"
+    ],
+    "category": "Unity"
+}
