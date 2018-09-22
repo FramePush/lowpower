@@ -73,7 +73,7 @@ extern "C" {
 			return;
 		}
 		
-		CFBridgingRelease(powerStatus);
+		CFRelease(powerStatus);
 	}
 	
 #if __cplusplus
