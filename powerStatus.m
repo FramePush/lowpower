@@ -9,12 +9,12 @@
 #import "PowerStatus.h"
 #import <Foundation/NSProcessInfo.h>
 
-BOOL powerStatusCheckLowPowerMode()
-{
-	return [[NSProcessInfo processInfo] isLowPowerModeEnabled];
-}
-
 @implementation PowerStatus
+
++ (BOOL) checkLowPowerMode
+{
+    return [[NSProcessInfo processInfo] isLowPowerModeEnabled];
+}
 
 - (instancetype) init
 {
@@ -32,7 +32,7 @@ BOOL powerStatusCheckLowPowerMode()
 
 - (void) receiveChange
 {
-	UnitySendMessage([self.targetObject UTF8String], "HandleSaverChange", powerStatusCheckLowPowerMode() ? "true" : "false");
+	UnitySendMessage([self.targetObject UTF8String], "HandleSaverChange", [PowerStatus checkLowPowerMode] ? "true" : "false");
 }
 
 - (void) startMonitor
@@ -59,7 +59,7 @@ extern "C" {
 	
 	bool _isLowPowerModeOn()
 	{
-		return powerStatusCheckLowPowerMode();
+		return [PowerStatus checkLowPowerMode];
 	}
 	
 	CFTypeRef _createPowerStatus(const char * targetName)

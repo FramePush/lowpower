@@ -12,6 +12,8 @@
 
 @property (atomic, retain) NSString * targetObject;
 
++ (BOOL) checkLowPowerMode;
+
 - (instancetype) initWithTarget: (NSString *)target NS_DESIGNATED_INITIALIZER;
 - (void) startMonitor;
 - (void) stopMonitor;
