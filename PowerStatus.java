@@ -10,7 +10,7 @@ import com.unity3d.player.UnityPlayer;
 /**
  * @author Brian Turner
  */
-public class PowerStatus {
+public class PowerStatus implements AutoCloseable {
 
     private String _name;
     private BroadcastReceiver _receiver;
@@ -18,6 +18,16 @@ public class PowerStatus {
     public PowerStatus(String name) {
         _name = name;
         
+        startReceiver();
+    }
+
+    public void finalize() {
+        close();
+    }
+
+    public void startReceiver() {
+        stopReceiver();
+
         _receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -27,8 +37,19 @@ public class PowerStatus {
         UnityPlayer.currentActivity.registerReceiver(_receiver, new IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED));
     }
 
+    public void stopReceiver() {
+        if (_receiver == null) return;
+        UnityPlayer.currentActivity.unregisterReceiver(_receiver);
+        _receiver = null;
+    }
+
     public static boolean isPowerSaveModeOn() {
         PowerManager pm = (PowerManager) UnityPlayer.currentActivity.getSystemService(Context.POWER_SERVICE);
         return pm.isPowerSaveMode();
+    }
+
+    @Override
+    public void close() {
+        stopReceiver();
     }
 }

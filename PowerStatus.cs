@@ -96,6 +96,7 @@ public class PowerStatus : MonoBehaviour
 #elif UNITY_IOS
 		_destroyPowerStatus(m_NativeObject);
 #elif UNITY_ANDROID
+		m_JavaObject.Call("close");
 		m_JavaObject.Dispose();
 #endif
 	}
