@@ -35,6 +35,10 @@ public class PowerStatus : MonoBehaviour
 			return false;
 #elif UNITY_IOS
 			return _isLowPowerModeOn();
+#elif UNITY_ANDROID
+			using (AndroidJavaClass ps = new AndroidJavaClass("com.framepush.lowpower.PowerStatus")) {
+				return ps.CallStatic<bool>("isPowerSaveModeOn");
+			}
 #else
 			return false;
 #endif
@@ -61,6 +65,8 @@ public class PowerStatus : MonoBehaviour
 #if UNITY_EDITOR
 #elif UNITY_IOS
 	IntPtr m_NativeObject;
+#elif UNITY_ANDROID
+	AndroidJavaObject m_JavaObject;
 #endif
 
 	#region Overrides
@@ -79,6 +85,8 @@ public class PowerStatus : MonoBehaviour
 #if UNITY_EDITOR
 #elif UNITY_IOS
 		m_NativeObject = _createPowerStatus(name);
+#elif UNITY_ANDROID
+		m_JavaObject = new AndroidJavaObject("com.framepush.lowpower.PowerStatus", name);
 #endif
 	}
 
@@ -87,6 +95,8 @@ public class PowerStatus : MonoBehaviour
 #if UNITY_EDITOR
 #elif UNITY_IOS
 		_destroyPowerStatus(m_NativeObject);
+#elif UNITY_ANDROID
+		m_JavaObject.Dispose();
 #endif
 	}
 
