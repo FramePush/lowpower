@@ -9,7 +9,7 @@ public class PowerStatus : MonoBehaviour
 {
 	static PowerStatus s_Instance;
 
-	static PowerStatus Instance
+	private static PowerStatus Instance
 	{
 		get
 		{
@@ -31,10 +31,7 @@ public class PowerStatus : MonoBehaviour
 	{
 		get
 		{
-#if UNITY_EDITOR_OSX
-			return false;
-#elif UNITY_EDITOR_WIN
-			// TODO Do Windows 10 Battery Saver checks
+#if UNITY_EDITOR
 			return false;
 #elif UNITY_IOS
 			return _isLowPowerModeOn();
@@ -61,10 +58,10 @@ public class PowerStatus : MonoBehaviour
 
 	Action<bool> s_PowerSaverChanged;
 
-	#if UNITY_EDITOR
-	#elif UNITY_IOS
+#if UNITY_EDITOR
+#elif UNITY_IOS
 	IntPtr m_NativeObject;
-	#endif
+#endif
 
 	#region Overrides
 
@@ -79,37 +76,37 @@ public class PowerStatus : MonoBehaviour
 
 		hideFlags = HideFlags.HideAndDontSave;
 
-		#if UNITY_EDITOR
-		#elif UNITY_IOS
-			m_NativeObject = _createPowerStatus(name);
-		#endif
+#if UNITY_EDITOR
+#elif UNITY_IOS
+		m_NativeObject = _createPowerStatus(name);
+#endif
 	}
 
 	protected virtual void OnDestroy()
 	{
-		#if UNITY_EDITOR
-		#elif UNITY_IOS
-			_destroyPowerStatus(m_NativeObject);
-		#endif
+#if UNITY_EDITOR
+#elif UNITY_IOS
+		_destroyPowerStatus(m_NativeObject);
+#endif
 	}
 
 	#endregion
 
 	#region Native Messages
 
-	void HandleSaverChange(string message)
+	// ReSharper disable once UnusedMember.Local
+	private void HandleSaverChange(string message)
 	{
 		bool state;
-		if (bool.TryParse(message, out state)) {
-			if (s_PowerSaverChanged != null) {
-				s_PowerSaverChanged(state);
-			}
+		if (!bool.TryParse(message, out state)) return;
+		if (s_PowerSaverChanged != null) {
+			s_PowerSaverChanged(state);
 		}
 	}
 
 	#endregion
 
-	#if UNITY_IOS
+#if UNITY_IOS
 	[DllImport("__Internal")]
 	static extern bool _isLowPowerModeOn();
 
@@ -118,5 +115,5 @@ public class PowerStatus : MonoBehaviour
 
 	[DllImport("__Internal")]
 	static extern void _destroyPowerStatus(IntPtr powerStatus);
-	#endif
+#endif
 }
