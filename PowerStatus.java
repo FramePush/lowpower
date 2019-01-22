@@ -12,6 +12,11 @@ import com.unity3d.player.UnityPlayer;
  */
 public class PowerStatus implements AutoCloseable {
 
+    public static boolean isPowerSaveModeOn() {
+        PowerManager pm = (PowerManager) UnityPlayer.currentActivity.getSystemService(Context.POWER_SERVICE);
+        return pm.isPowerSaveMode();
+    }
+
     private String _name;
     private BroadcastReceiver _receiver;
 
@@ -23,6 +28,12 @@ public class PowerStatus implements AutoCloseable {
 
     public void finalize() {
         close();
+    }
+
+    public void stopReceiver() {
+        if (_receiver == null) return;
+        UnityPlayer.currentActivity.unregisterReceiver(_receiver);
+        _receiver = null;
     }
 
     public void startReceiver() {
@@ -37,19 +48,10 @@ public class PowerStatus implements AutoCloseable {
         UnityPlayer.currentActivity.registerReceiver(_receiver, new IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED));
     }
 
-    public void stopReceiver() {
-        if (_receiver == null) return;
-        UnityPlayer.currentActivity.unregisterReceiver(_receiver);
-        _receiver = null;
-    }
-
-    public static boolean isPowerSaveModeOn() {
-        PowerManager pm = (PowerManager) UnityPlayer.currentActivity.getSystemService(Context.POWER_SERVICE);
-        return pm.isPowerSaveMode();
-    }
-
+    //region AutoClosable implementations
     @Override
     public void close() {
         stopReceiver();
     }
+    //endregion
 }

@@ -6,10 +6,10 @@
 //
 //
 
-#import "PowerStatus.h"
+#import "CFPPowerStatus.h"
 #import <Foundation/NSProcessInfo.h>
 
-@implementation PowerStatus
+@implementation CFPPowerStatus
 
 + (BOOL) checkLowPowerMode
 {
@@ -32,7 +32,7 @@
 
 - (void) receiveChange
 {
-	UnitySendMessage([self.targetObject UTF8String], "HandleSaverChange", [PowerStatus checkLowPowerMode] ? "true" : "false");
+	UnitySendMessage([self.targetObject UTF8String], "HandleSaverChange", [CFPPowerStatus checkLowPowerMode] ? "true" : "false");
 }
 
 - (void) startMonitor
@@ -57,17 +57,17 @@
 extern "C" {
 #endif
 	
-	bool _isLowPowerModeOn()
+	bool _CFPisLowPowerModeOn()
 	{
-		return [PowerStatus checkLowPowerMode];
+		return [CFPPowerStatus checkLowPowerMode];
 	}
 	
-	CFTypeRef _createPowerStatus(const char * targetName)
+	CFTypeRef _CFPcreatePowerStatus(const char * targetName)
 	{
-		return CFBridgingRetain([[PowerStatus alloc] initWithTarget:[NSString stringWithUTF8String:targetName]]);
+		return CFBridgingRetain([[CFPPowerStatus alloc] initWithTarget:[NSString stringWithUTF8String:targetName]]);
 	}
 	
-	void _destroyPowerStatus(CFTypeRef powerStatus)
+	void _CFPdestroyPowerStatus(CFTypeRef powerStatus)
 	{
 		if (powerStatus == NULL) {
 			return;
