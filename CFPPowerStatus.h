@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PowerStatus : NSObject
+@interface CFPPowerStatus : NSObject
 
 @property (atomic, retain) NSString * targetObject;
+
++ (BOOL) checkLowPowerMode;
 
 - (instancetype) initWithTarget: (NSString *)target NS_DESIGNATED_INITIALIZER;
 - (void) startMonitor;
