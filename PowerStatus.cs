@@ -84,6 +84,7 @@ namespace LowPower
 			}
 
 			hideFlags = HideFlags.HideAndDontSave;
+			DontDestroyOnLoad(gameObject);
 
 #if UNITY_EDITOR
 #elif UNITY_IOS
